@@ -1,5 +1,7 @@
 package audioback;
-
+/**
+ * Phát nhạc nói chung 
+ */
 import java.io.File;
 
 public abstract class Music {
@@ -35,13 +37,18 @@ public abstract class Music {
 
     public abstract void stop();
 
+    // Lấy tổng thời gian bài hát (microsecond)
     public abstract long getMusicTimeLength();
 
+    // Lấy phần trăm hiện tại của bài hát (0.0 - 1.0)
     public abstract double getMusicTimePercent();
 
+    // Đặt phần trăm hiện tại của bài hát (0.0 - 1.0)
     public abstract void setMusicTimePercent(double timePercent);
 
+    // Lấy thông số volume hiện tại (0.0f - 1.0f)
     public abstract float getVolume();
 
+    // Đặt thông số volume hiện tại (0.0f - 1.0f)
     public abstract void setVolume(float volume);
 }

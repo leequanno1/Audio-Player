@@ -1,5 +1,7 @@
 package audioback;
-
+/**
+ * Chạy và test
+ */
 import java.awt.*;
 import java.awt.event.*;
 
@@ -22,7 +24,7 @@ public class Main extends JFrame implements Action{
 
 
     Music music ;// D:/GitHub/Audio-Player/audioback/a.wav
-    // D:/GitHub/Audio-Player/audioback/【Vietsub】Yoru ni Kakeru「夜に駆ける」YOASOBI.mp3
+    // D:/GitHub/Audio-Player/audioback/Yoru ni Kakeru.mp3
 
     public Main(){
         setTitle("Music player");
@@ -87,6 +89,7 @@ public class Main extends JFrame implements Action{
         // TODO Auto-generated method stub
         if(e.getSource() == play){
             try {
+                // Nếu là bài hát mới thì tạo bài hát
                 if(music == null){
                     String source = sourceField.getText();
                     String type = source.substring(source.length()-3, source.length());
@@ -96,18 +99,27 @@ public class Main extends JFrame implements Action{
                         music = new WavMusic(source);
                     }
                 }
+                // Nếu bài hát đã được tạo rồi và đang dừng thì phát tiếp tục
                 if(music.isPause()){
                     timeLenField.setText("" + music.getMusicTimeLength());
                     music.play();
+                    /*
+                     * Ứng dụng xử lý thanh trượt volume.
+                     */
                     music.setVolume(0.3f);
                 }
             } catch (Exception ex) {
                 // TODO: handle exception
             }
         }
+        // Dừng bài hát
         if(e.getSource() == pause){
             music.pause();
         }
+        /*
+         * Chổ này có thể xử lý sự kiện khi musicTimePercent == 1 
+         * hoặc musicTimePossition == musicTimeLength thì chuyển sang bài tiếp theo
+         */
         if(e.getSource() == newB){
             sourceField.setText("");
             // music.pause();
@@ -115,6 +127,9 @@ public class Main extends JFrame implements Action{
             music.stop();
             music = null;
         }
+        /*
+         * Lấy thời gian hiện tại
+         */
         if(e.getSource() == timePos){
             try {
                 timePosField.setText(""+music.getMusicTimePosition());
@@ -122,9 +137,17 @@ public class Main extends JFrame implements Action{
                 // TODO: handle exception
             } 
         }
+        /*
+         * Lấy phần trăm thời gian, 
+         * ứng dụng xử lý hiển thị thanh playback time.
+         */
         if(e.getSource() == timePercentB){
             timePercenField.setText("" + music.getMusicTimePercent());
         }
+        /*
+         * Đặt phần trăm thời gian, 
+         * ứng dụng xử lý điều người dùng điều chỉnh thời gian video trên thanh playback.
+         */
         if(e.getSource() == setTimePercentB){
             Double timePercetn = Double.parseDouble(timePercenField.getText());
             music.pause();
@@ -138,19 +161,22 @@ public class Main extends JFrame implements Action{
             }
             music.setMusicTimePercent(timePercetn);
             music.play();
+            /*
+             * Ứng dụng xử lý thanh trượt volume.
+             */
             music.setVolume(0.3f);
         }
-    }
-
-    @Override
-    public Object getValue(String key) {
-        // TODO Auto-generated method stub
-        return null;
     }
 
     @Override
     public void putValue(String key, Object value) {
         // TODO Auto-generated method stub
         
+    }
+
+    @Override
+    public Object getValue(String key) {
+        // TODO Auto-generated method stub
+        return null;
     }
 }

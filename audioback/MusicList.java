@@ -1,5 +1,7 @@
 package audioback;
-
+/**
+ * Class có chức năng lấy tên file nhạc và tên folder
+ */
 import java.io.File;
 
 public class MusicList {

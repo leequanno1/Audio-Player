@@ -1,5 +1,7 @@
 package audioback;
-
+/**
+ * Phát mp3 nhưng chịu 
+ */
 import javazoom.jl.player.Player;
 
 
@@ -49,6 +51,12 @@ public class Mp3Music extends Music {
 
     @Override
     public void setVolume(float volume) {
+        // TODO Auto-generated method stub
+        
+    }
+
+    @Override
+    public void stop() {
         // TODO Auto-generated method stub
         
     }
