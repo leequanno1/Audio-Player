@@ -287,12 +287,17 @@ public class MusicPlayerController implements javafx.fxml.Initializable {
                 music = null;
                 indexSong = 0;
                 changeTheme();
+                timePosition.setText("00:00");
                 playButton.setGlyphName("PLAY");
                 statePlay = false;
                 System.out.println("End list");
             }
         } else {
-            indexSong++;
+            if (stateRandom == true) {
+                indexSong = (int) (Math.random() * songs.size());
+            } else {
+                indexSong++;
+            }
             music.stop();
             music = new WavMusic(songs.get(indexSong).getPath());
             music.play();
