@@ -14,6 +14,8 @@ import javafx.scene.paint.ImagePattern;
 import javafx.scene.shape.Line;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
+import javafx.stage.DirectoryChooser;
+import javafx.stage.FileChooser;
 
 import java.io.File;
 import java.io.IOException;
@@ -22,6 +24,8 @@ import java.util.*;
 
 
 public class MusicPlayerController implements javafx.fxml.Initializable {
+    @FXML
+    private AnchorPane container;
     @FXML
     private FontAwesomeIcon playButton;
     @FXML
@@ -44,58 +48,73 @@ public class MusicPlayerController implements javafx.fxml.Initializable {
     public void initialize(URL url, ResourceBundle resourceBundle) {
         setInit();
         int index = 0;
-        for (Song s : songs) {
-            try {
-                index++;
-                AnchorPane pane = FXMLLoader.load(getClass().getResource("item.fxml"));
-                //create new label
-                Label newLabel = new Label(s.getName());
-                newLabel.setLayoutX(56);
-                newLabel.setLayoutY(9);
-                newLabel.setText(s.getName());
-                newLabel.setFont(new Font("Arial", 15));
+        if (songs.size() != 0) {
+            for (Song s : songs) {
+                try {
+                    index++;
+                    AnchorPane pane = FXMLLoader.load(getClass().getResource("item.fxml"));
+                    //create new label
+                    Label newLabel = new Label(s.getName());
+                    newLabel.setLayoutX(56);
+                    newLabel.setLayoutY(9);
+                    newLabel.setText(s.getName());
+                    newLabel.setFont(new Font("Arial", 15));
 
-                //create new number song
-                Label newLabelNumberSong = new Label(String.valueOf(index));
-                newLabelNumberSong.setLayoutX(24);
-                newLabelNumberSong.setLayoutY(9);
-                newLabelNumberSong.setFont(new Font("Arial", 15));
+                    //create new number song
+                    Label newLabelNumberSong = new Label(String.valueOf(index));
+                    newLabelNumberSong.setLayoutX(24);
+                    newLabelNumberSong.setLayoutY(9);
+                    newLabelNumberSong.setFont(new Font("Arial", 15));
 
-                pane.getChildren().set(0, newLabel);
-                pane.getChildren().set(1, newLabelNumberSong);
+                    pane.getChildren().set(0, newLabel);
+                    pane.getChildren().set(1, newLabelNumberSong);
 
-                pane.addEventFilter(MouseEvent.MOUSE_CLICKED, e -> {
-                    String itemSelectString = pane.getChildren().get(1).toString();
-                    int itemSelect = Integer.parseInt(itemSelectString.substring(itemSelectString.length() - 2, itemSelectString.length() - 1));
-                    indexSong = itemSelect - 1;
-                    changeTheme();
-                    changeSong();
-                    music.stop();
-                    setTimeEnd();
-                    setTimePosition();
-                    percent.setValue(0);
-                    image.setRotate(0);
-                    playButton.setGlyphName("PLAY");
-                    statePlay = false;
-                });
+                    pane.addEventFilter(MouseEvent.MOUSE_CLICKED, e -> {
+                        String itemSelectString = pane.getChildren().get(1).toString();
+                        int itemSelect = Integer.parseInt(itemSelectString.substring(itemSelectString.length() - 2, itemSelectString.length() - 1));
+                        indexSong = itemSelect - 1;
+                        changeTheme();
+                        changeSong();
+                        music.stop();
+                        setTimeEnd();
+                        setTimePosition();
+                        percent.setValue(0);
+                        image.setRotate(0);
+                        playButton.setGlyphName("PLAY");
+                        statePlay = false;
+                    });
 
-                vBox.getChildren().add(pane);
-                vBox.setSpacing(10);
-            } catch (IOException e) {
-                throw new RuntimeException(e);
+                    vBox.getChildren().add(pane);
+                    vBox.setSpacing(10);
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+                list.setContent(vBox);
+                changeTheme();
             }
-            list.setContent(vBox);
-            changeTheme();
         }
     }
-    public void setInit(){
+
+    public void setInit() {
         setImageSong();
-        addSong();
-        music = new WavMusic(songs.get(indexSong).getPath());
-        music.setVolume((float) volume.getValue()/100);
-        setTimeEnd();
-        changePercent();
+        if (songs.size() == 0) {
+            Label label = new Label("Vui lòng ấn thêm bài hát");
+            label.setFont(new Font("Arial", 30));
+            label.setLayoutX(100);
+            label.setLayoutY(200);
+            list.setContent(label);
+            nameSong.setText("");
+            singer.setText("");
+            timeEnd.setText("00:00");
+            timePosition.setText("00:00");
+        } else {
+            music = new WavMusic(songs.get(indexSong).getPath());
+            music.setVolume((float) volume.getValue() / 100);
+            setTimeEnd();
+            changePercent();
+        }
     }
+
     public String convertTime(long time) {
         long minute = time / 60000000;
         long second = (time % 60000000) / 1000000;
@@ -127,24 +146,39 @@ public class MusicPlayerController implements javafx.fxml.Initializable {
     }
 
     public void addSong() {
-        Song song = new Song("Vậy là yêu", "Đức Anh", "src/main/java/sound/sound1.wav");
-        Song song1 = new Song("Rằng em mãi ở bên", "Bích Phương", "src/main/java/sound/sound2.wav");
-        Song song2 = new Song("Chúng ta sau này", "T.R.I", "src/main/java/sound/sound3.wav");
-        Song song4 = new Song("Say đắm trong lần đầu", "WINNO x NAMB", "src/main/java/sound/sound4.wav");
-        Song song5 = new Song("Rằng em mãi ở bên", "Bích Phương", "src/main/java/sound/sound2.wav");
-        Song song6 = new Song("Chúng ta sau này", "T.R.I", "src/main/java/sound/sound3.wav");
+        if (statePlay == true) {
+            music.stop();
+            playButton.setGlyphName("PLAY");
+            statePlay = false;
+        }
+        DirectoryChooser directoryChooser = new DirectoryChooser();
+        File selectedDirectory = directoryChooser.showDialog(null);
+        if (selectedDirectory == null) {
 
-        songs.add(song);
-        songs.add(song1);
-        songs.add(song2);
-        songs.add(song4);
-        songs.add(song5);
-        songs.add(song6);
+        } else {
+            File folder = new File(selectedDirectory.getAbsolutePath());
+            File[] listOfFiles = folder.listFiles();
+            try {
+                vBox.getChildren().clear();
+                songs.clear();
+                for (File file : listOfFiles) {
+                    if (file.isFile() && file.getName().endsWith(".wav")) {
+                        String name = file.getName().substring(0, file.getName().length() - 4);
+                        String path = file.getPath();
+                        songs.add(new Song(name, "Unknown", path));
+                    }
+                }
+            } catch (Exception e) {
+                System.out.println("Không có bài hát nào");
+            }
+            System.out.println(songs.size());
+            initialize(null, null);
+        }
     }
 
     public void setImageSong() {
         //set circle image
-        File file = new File("src/main/java/img/vly.jpg");
+        File file = new File("src/main/java/img/test.jpg");
         Image img = new Image(file.toURI().toString());
         Rectangle rectangle = new Rectangle();
         rectangle.setX(0);
@@ -311,7 +345,7 @@ public class MusicPlayerController implements javafx.fxml.Initializable {
     }
 
     public void showPopup(MouseEvent mouseEvent) {
-        System.out.println("Show popup");
+        addSong();
     }
 
 }

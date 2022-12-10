@@ -4,7 +4,6 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.Slider?>
-<?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.shape.Line?>
@@ -12,7 +11,7 @@
 
 <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="602.0" prefWidth="803.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.demo1.MusicPlayerController">
     <children>
-        <AnchorPane prefHeight="602.0" prefWidth="803.0" style="-fx-background-color: #CFF5E7;">
+        <AnchorPane fx:id="container" prefHeight="602.0" prefWidth="803.0" style="-fx-background-color: #CFF5E7;">
             <children>
                 <AnchorPane layoutX="56.0" layoutY="96.0" prefHeight="374.0" prefWidth="309.0" style="-fx-background-color: #59C1BD; -fx-background-radius: 40;">
                     <children>
@@ -20,11 +19,7 @@
                         <FontAwesomeIcon fx:id="next" glyphName="STEP_FORWARD" layoutX="208.0" layoutY="343.0" onMouseClicked="#next" size="18" text="" />
                         <FontAwesomeIcon fx:id="previous" glyphName="STEP_BACKWARD" layoutX="94.0" layoutY="343.0" onMouseClicked="#previous" size="18" />
                         <FontAwesomeIcon fx:id="random" glyphName="RANDOM" layoutX="41.0" layoutY="343.0" onMouseClicked="#random" size="18" />
-                        <ImageView fx:id="image" fitHeight="262.0" fitWidth="262.0" layoutX="24.0" layoutY="35.0" pickOnBounds="true" preserveRatio="true">
-                            <image>
-                                <Image url="@../../../../java/img/image.png" />
-                            </image>
-                        </ImageView>
+                        <ImageView fx:id="image" fitHeight="262.0" fitWidth="262.0" layoutX="24.0" layoutY="35.0" pickOnBounds="true" preserveRatio="true" />
                         <FontAwesomeIcon glyphName="REFRESH" layoutX="256.0" layoutY="343.0" onMouseClicked="#loop" size="18" />
                         <Line fx:id="unRandom" endX="-12.000007629394531" endY="14.5714111328125" layoutX="53.0" layoutY="331.0" startX="5.999992370605469" startY="-3.4285888671875" strokeWidth="2.5" visible="false" />
                         <Line fx:id="unLoop" endX="-9.999969482421875" endY="15.5714111328125" layoutX="266.0" layoutY="330.0" startX="5.999992370605469" startY="-3.4285888671875" strokeWidth="2.5" visible="false" />
@@ -34,22 +29,22 @@
                     <children>
                         <AnchorPane layoutY="14.0" prefHeight="60.0" prefWidth="378.0">
                             <children>
-                                <Label fx:id="nameSong" layoutX="21.0" layoutY="-4.0" prefHeight="36.0" prefWidth="282.0" text="Vậy là yêu">
+                                <Label fx:id="nameSong" layoutX="21.0" layoutY="-4.0" prefHeight="36.0" prefWidth="282.0">
                                     <font>
                                         <Font name="Arial Bold" size="25.0" />
                                     </font>
                                 </Label>
-                                <Label fx:id="singer" layoutX="28.0" layoutY="36.0" text="Đức Anh">
+                                <Label fx:id="singer" layoutX="28.0" layoutY="36.0" text="">
                                     <font>
                                         <Font name="System Bold" size="13.0" />
                                     </font>
                                 </Label>
-                                <Label fx:id="rate" layoutX="307.0" layoutY="13.0" text="4.0">
+                                <Label fx:id="rate" layoutX="307.0" layoutY="13.0" text="4.0" visible="false">
                                     <font>
                                         <Font name="System Bold" size="25.0" />
                                     </font>
                                 </Label>
-                                <Label layoutX="343.0" layoutY="27.0" text="/5">
+                                <Label layoutX="343.0" layoutY="27.0" text="/5" visible="false">
                                     <font>
                                         <Font name="System Bold" size="15.0" />
                                     </font>
