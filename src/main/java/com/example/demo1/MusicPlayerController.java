@@ -10,6 +10,8 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
 import javafx.scene.paint.ImagePattern;
 import javafx.scene.shape.Line;
 import javafx.scene.shape.Rectangle;
@@ -40,6 +42,7 @@ public class MusicPlayerController implements javafx.fxml.Initializable {
     private int indexSong = 0;
     private VBox vBox = new VBox();
     private Music music;
+
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -129,9 +132,9 @@ public class MusicPlayerController implements javafx.fxml.Initializable {
                         public void run() {
                             timePosition.setText(convertTime(music.getMusicTimePosition()));
                             percent.setValue(music.getMusicTimePercent() * 100);
-                            if (percent.getValue() >= 99.5) {
-                                next(null);
-                            }
+//                            if (percent.getValue() >= 99.5) {
+//                                next(null);
+//                            }
                         }
                     });
                 } else {
@@ -162,7 +165,7 @@ public class MusicPlayerController implements javafx.fxml.Initializable {
                 vBox.getChildren().clear();
                 songs.clear();
                 for (File file : listOfFiles) {
-                    if (file.isFile() && file.getName().endsWith(".wav")) {
+                    if (file.isFile() && (file.getName().endsWith(".wav") || file.getName().endsWith(".mp3"))) {
                         String name = file.getName().substring(0, file.getName().length() - 4);
                         String path = file.getPath();
                         songs.add(new Song(name, "Unknown", path));

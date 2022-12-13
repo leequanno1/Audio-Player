@@ -9,11 +9,10 @@ import javafx.stage.Stage;
 
 import java.io.File;
 import java.io.IOException;
-
 public class MusicPlayerApplication extends Application {
     @Override
     public void start(Stage stage) throws IOException {
-        FXMLLoader fxmlLoader = new FXMLLoader(MusicPlayerApplication.class.getResource("hello-view.fxml"));
+        FXMLLoader fxmlLoader = new FXMLLoader(MusicPlayerApplication.class.getResource("main.fxml"));
         Scene scene = new Scene(fxmlLoader.load(), 820, 610);
 
         ChangeListener<Number> stageSizeListener = (observable, oldValue, newValue) -> {
