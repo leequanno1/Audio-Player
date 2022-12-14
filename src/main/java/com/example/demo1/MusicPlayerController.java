@@ -108,17 +108,22 @@ public class MusicPlayerController implements javafx.fxml.Initializable {
             timeEnd.setText("00:00");
             timePosition.setText("00:00");
         } else {
-            music = new WavMusic(songs.get(indexSong).getPath());
-            music.setVolume((float) volume.getValue() / 100);
+            music = new Music(songs.get(indexSong).getPath());
             setTimeEnd();
-            changePercent();
         }
     }
 
     public String convertTime(long time) {
-        long minute = time / 60000000;
-        long second = (time % 60000000) / 1000000;
-        return String.format("%02d:%02d", minute, second);
+        String second = String.valueOf(time % 60);
+        if (second.length() == 1) {
+            second = "0" + second;
+        }
+        //convert time to string minute
+        String minute = String.valueOf(time / 60);
+        if (minute.length() == 1) {
+            minute = "0" + minute;
+        }
+        return minute + ":" + second;
     }
 
     public void setTimePosition() {
@@ -132,9 +137,10 @@ public class MusicPlayerController implements javafx.fxml.Initializable {
                         public void run() {
                             timePosition.setText(convertTime(music.getMusicTimePosition()));
                             percent.setValue(music.getMusicTimePercent() * 100);
-//                            if (percent.getValue() >= 99.5) {
-//                                next(null);
-//                            }
+                            if (percent.getValue() >= 99.5) {
+                                next(null);
+                            }
+                            setTimeEnd();
                         }
                     });
                 } else {
@@ -147,7 +153,9 @@ public class MusicPlayerController implements javafx.fxml.Initializable {
     public void setTimeEnd() {
         timeEnd.setText(convertTime(music.getMusicTimeLength()));
     }
-
+    public  void  setVolume(){
+        music.setVolume((float) volume.getValue() / 100);
+    }
     public void addSong() {
         if (statePlay == true) {
             music.stop();
@@ -215,22 +223,22 @@ public class MusicPlayerController implements javafx.fxml.Initializable {
 
     public void changeSong() {
         music.stop();
-        music = new WavMusic(songs.get(indexSong).getPath());
+        music = new Music(songs.get(indexSong).getPath());
         music.setVolume((float) volume.getValue() / 100);
         music.play();
         setRote();
     }
 
-    public void changePercent() {
-        percent.addEventHandler(MouseEvent.MOUSE_RELEASED, e -> {
-            if (statePlay == true) {
-                music.pause();
-                music.setMusicTimePercent(percent.getValue() / 100);
-                music.play();
-            } else {
-                music.setMusicTimePercent(percent.getValue() / 100);
-            }
-        });
+    public void setPercent(MouseEvent mouseEvent) {
+        if (statePlay == true) {
+            music.pause();
+            music.setMusicTimePercent(percent.getValue()/100);
+            music.play();
+        } else {
+            music.setMusicTimePercent(percent.getValue()/100);
+        }
+        music.setMusicTimePercent(percent.getValue() / 100);
+        timePosition.setText(convertTime(music.getMusicTimePosition()));
     }
 
     public void setRote() {
@@ -256,7 +264,7 @@ public class MusicPlayerController implements javafx.fxml.Initializable {
             statePlay = true;
             if (music == null) {
                 String source = songs.get(indexSong).getPath();
-                music = new WavMusic(source);
+                music = new Music(source);
             }
             if (music.isPause()) {
                 music.play();
@@ -280,7 +288,7 @@ public class MusicPlayerController implements javafx.fxml.Initializable {
                 indexSong = 0;
                 changeTheme();
                 music.stop();
-                music = new WavMusic(songs.get(indexSong).getPath());
+                music = new Music(songs.get(indexSong).getPath());
                 music.play();
                 changeTheme();
                 setTimeEnd();
@@ -302,7 +310,7 @@ public class MusicPlayerController implements javafx.fxml.Initializable {
                 indexSong++;
             }
             music.stop();
-            music = new WavMusic(songs.get(indexSong).getPath());
+            music = new Music(songs.get(indexSong).getPath());
             music.play();
             changeTheme();
             setTimeEnd();
@@ -318,7 +326,7 @@ public class MusicPlayerController implements javafx.fxml.Initializable {
             indexSong--;
         }
         music.stop();
-        music = new WavMusic(songs.get(indexSong).getPath());
+        music = new Music(songs.get(indexSong).getPath());
         music.play();
         changeTheme();
         setTimeEnd();
