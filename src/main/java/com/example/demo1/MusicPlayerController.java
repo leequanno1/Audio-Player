@@ -138,8 +138,6 @@ public class MusicPlayerController implements javafx.fxml.Initializable {
                             if (percent.getValue() >= 99.5) {
                                 if (stateRandom == true) {
                                     indexSong = (int) (Math.random() * songs.size());
-                                } else {
-                                    indexSong++;
                                 }
                                 next(null);
                             }
