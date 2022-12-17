@@ -12,6 +12,7 @@ public class Music {
     private MediaPlayer player;
     private boolean pause;
 
+    /*Constructor*/
     public Music(String musicLocation) {
         try {
             musicPath = new File(musicLocation);
@@ -26,29 +27,35 @@ public class Music {
         }
     }
 
+    /*Thực hiện trả về giá trị thời gian audio theo giây (long).*/
     public long getMusicTimePosition() {
         return (long) player.getCurrentTime().toSeconds();
     }
 
+    /*Trả về giá trị pause.*/
     public boolean isPause() {
         return pause;
     }
 
+    /*Phát audio.*/
     public void play(){
         player.play();
         pause = false;
     };
 
+    /*Pause audio.*/
     public void pause(){
         player.pause();
         pause = true;
     };
 
+    /*Stop audio.*/
     public void stop(){
         player.stop();
         pause = true;
     };
 
+    /*Trả về tổng thời gian bài hát theo giây (long).*/
     public long getMusicTimeLength(){
         return (long) player.getTotalDuration().toSeconds();
     };
@@ -57,15 +64,19 @@ public class Music {
         return (double) player.getCurrentTime().toSeconds() / player.getTotalDuration().toSeconds();
     }
 
+    /*Điều chỉnh thời gian audio theo giá trị timePercent.
+    * timePercent nhận giá trị trong khoảng (0,1)*/
     public void setMusicTimePercent(double timePercent){
         player.seek(player.getTotalDuration().multiply(timePercent));
 
     };
 
+    /*Trả về giá trị volume hiện tại.*/
     public float getVolume(){
         return (float) player.getVolume();
     };
 
+    /*Điều chỉnh giá trị volume theo giá trị truyền vào.*/
     public void setVolume(float volume){
         player.setVolume(volume);
     };

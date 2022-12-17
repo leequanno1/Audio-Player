@@ -43,6 +43,7 @@ public class MusicPlayerController implements javafx.fxml.Initializable {
 
     private float volumeValue = 0.3f;
 
+    /*Hàm khởi tạo giá trị ban đầu.*/
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         setInit();
@@ -111,6 +112,8 @@ public class MusicPlayerController implements javafx.fxml.Initializable {
         }
     }
 
+    /*Thời gian trong chương trình được trả về số giây.
+    Hàm này trả về chuổi thời gian theo định dạng "Phút : Giây"*/
     public String convertTime(long time) {
         String second = String.valueOf(time % 60);
         if (second.length() == 1) {
@@ -124,6 +127,7 @@ public class MusicPlayerController implements javafx.fxml.Initializable {
         return minute + ":" + second;
     }
 
+    /*Hàm này điều chỉnh thời gian audio theo giá trị hiện tại của thanh trượt thời gian*/
     public void setTimePosition() {
         Timer timer = new Timer();
         timer.schedule(new TimerTask() {
@@ -139,6 +143,15 @@ public class MusicPlayerController implements javafx.fxml.Initializable {
                                 if (stateRandom == true) {
                                     indexSong = (int) (Math.random() * songs.size());
                                 }
+                                else {
+                                    if (indexSong >= songs.size() - 1) {
+                                        indexSong = -1;
+                                        if (stateLoop == false)
+                                        {
+                                            stop();
+                                        }
+                                    }
+                                }
                                 next(null);
                             }
                             setTimeEnd();
@@ -150,17 +163,23 @@ public class MusicPlayerController implements javafx.fxml.Initializable {
             }
         }, 0, 1000);
     }
+
+    /*Hàm đặt lại thời gian hiện tại đang hiển thị về thời gian khởi đầu.*/
     private void setInitTimePositon() {
         timePosition.setText("00:00");
     }
+
+    /*Hàm đặt lại thời gian kết thúc đang hiển thị.*/
     public void setTimeEnd() {
         timeEnd.setText(convertTime(music.getMusicTimeLength()));
     }
 
+    /*Hàm thực hiện thay đổi giá trị volume theo giá trị của thanh trượt volume*/
     public void setVolume() {
         music.setVolume(volumeValue);
     }
 
+    /*Hàm thực chọn thư mục chứa bài hát và lấy thông tin bài hát.*/
     public void addSong() {
         if (statePlay == true) {
             music.stop();
@@ -192,8 +211,8 @@ public class MusicPlayerController implements javafx.fxml.Initializable {
         }
     }
 
+
     public void setImageSong() {
-        //set circle image
         File file = new File("src/main/java/img/test.jpg");
         Image img = new Image(file.toURI().toString());
         Rectangle rectangle = new Rectangle();
@@ -207,7 +226,6 @@ public class MusicPlayerController implements javafx.fxml.Initializable {
         rectangle.setFill(pattern);
         image.setClip(rectangle);
         image.setImage(img);
-
     }
 
     private void changeTheme() {
@@ -226,6 +244,7 @@ public class MusicPlayerController implements javafx.fxml.Initializable {
         }
     }
 
+    /*Khởi tạo bài hát trong album theo vị trí của indexSong.*/
     private void createMusic() {
         music = new Music(songs.get(indexSong).getPath());
         setVolume();
@@ -233,12 +252,15 @@ public class MusicPlayerController implements javafx.fxml.Initializable {
         setTimeEnd();
     }
 
+
     public void changeSong() {
         music.stop();
         createMusic();
         music.play();
     }
 
+    /*Thay đổi thời gian phát hiện tại của audio theo giá trị của của thanh trượt thời gian.
+    * Thanh trượt thời gian nhận giá trị trong khoảng (0,100).*/
     public void setPercent(MouseEvent mouseEvent) {
         if (songs.size() > 0) {
             if (statePlay == true) {
@@ -252,10 +274,13 @@ public class MusicPlayerController implements javafx.fxml.Initializable {
             timePosition.setText(convertTime(music.getMusicTimePosition()));
         }
     }
+
+    /*Đặt lại thanh trượt thời gian về vị trí bắt đầu.*/
     private void setInitPercent() {
         percent.setValue(0);
     }
 
+    /*Thực hiện xoay hình ảnh "đĩa nhạc".*/
     public void setRote() {
         Timer timer = new Timer();
         TimerTask task = new TimerTask() {
@@ -273,6 +298,12 @@ public class MusicPlayerController implements javafx.fxml.Initializable {
         timer.scheduleAtFixedRate(task, 0, 10);
     }
 
+    /*Thực hiện phát nhạc.
+
+    * Nếu audio chưa được tạo thì thực hiện tạo và phát.
+    * Nhạc khi vừa được tạo thì isPause = true.
+
+    * Nếu audio đang dừng (isPause) thì thực hiện phát.*/
     private void play() {
         playButton.setGlyphName("PAUSE");
         statePlay = true;
@@ -287,12 +318,26 @@ public class MusicPlayerController implements javafx.fxml.Initializable {
         setTimePosition();
     }
 
+    /*Thực hiện dừng phát nhạc.*/
     private void pause() {
         playButton.setGlyphName("PLAY");
         music.pause();
         statePlay = false;
         System.out.println("Pausing");
     }
+
+    /*Thực hiện dừng phát nhạc khi danh sách nhạc đã đến cuối.*/
+    private void stop() {
+        music.stop();
+        timePosition.setText("00:00");
+        playButton.setGlyphName("PLAY");
+        statePlay = false;
+        System.out.println("End list");
+    }
+
+    /*Bắt sự kiện chuột của playButton.
+
+    * Nếu bài hát đang dừng thì phát nhạc và ngược lại.*/
     public void play(MouseEvent mouseEvent) {
         if (songs.size() > 0) {
             if (statePlay == false) {
@@ -303,27 +348,27 @@ public class MusicPlayerController implements javafx.fxml.Initializable {
         }
     }
 
+    /*Bắt sự kiện chuột. Thực hiện chuyển sang bài hát tiếp theo.
+
+    * Nếu bài hát hiện tại đang nằm cuối danh sách thì chuyển đến bài hát đầu danh sách,
+    * ngược lại thì chuyển đến bài hát tiếp theo.
+    *
+    * Nếu bài hát trước đang được phát thì sau khi thực hiện chuyển thì phát bài hát mới,
+    * ngược lại thì chỉ chuyển.*/
     public void next(MouseEvent mouseEvent) {
-//        image.setRotate(0);
         if (songs.size() > 0) {
-            if (indexSong == songs.size() - 1) {
-                indexSong = 0;
-                if (stateLoop) {
-                    play();
-                }else {
-                    pause();
-                }
-            } else {
+            if (indexSong < songs.size() - 1) {
                 indexSong++;
+            } else {
+                indexSong = 0;
             }
-            System.out.println("Next");
             if (statePlay) {
                 music.stop();
                 createMusic();
                 music.play();
                 changeTheme();
             } else {
-//                changeSong();
+                changeSong();
                 changeTheme();
                 music.stop();
                 setInitTimePositon();
@@ -332,6 +377,10 @@ public class MusicPlayerController implements javafx.fxml.Initializable {
             }
         }
     }
+
+    /*Bắt sự kiện chuột.
+    * Cơ chế tương tự next nhưng chuyển về bài hát trước đó,
+    * nếu bài hát hiện tại đang ở đầu album thì chuyển đến bài hát ở cuối album.*/
     public void previous(MouseEvent mouseEvent) {
         if (songs.size() > 0) {
             image.setRotate(0);
@@ -347,7 +396,7 @@ public class MusicPlayerController implements javafx.fxml.Initializable {
                 music.play();
                 changeTheme();
             } else {
-//                changeSong();
+                changeSong();
                 changeTheme();
                 music.stop();
                 setInitTimePositon();
@@ -357,6 +406,8 @@ public class MusicPlayerController implements javafx.fxml.Initializable {
         }
     }
 
+    /*Bắt sự kiện chuột.
+    * Đặt lại trạng thái lặp (stateLoop)*/
     public void loop(MouseEvent mouseEvent) {
         if (songs.size() > 0) {
             if (stateLoop == false) {
@@ -371,6 +422,8 @@ public class MusicPlayerController implements javafx.fxml.Initializable {
         }
     }
 
+    /*Bắt sự kiện chuột.
+     * Đặt lại trạng thái ngẩu nhiên (stateRandom)*/
     public void random(MouseEvent mouseEvent) {
         if (songs.size() > 0) {
             if (stateRandom == false) {
@@ -385,14 +438,20 @@ public class MusicPlayerController implements javafx.fxml.Initializable {
         }
     }
 
+    /*Bắt sự kiện chuột.
+    * Thực hiện hiển thị thanh trượt.*/
     public void showVolume(MouseEvent mouseEvent) {
         volume.setVisible(true);
     }
 
+    /*Thực hiện ẩn đi thanh trượt volume.*/
     private void hideVolume() {
         volume.setVisible(false);
     }
 
+    /*Bắt sự kiện chuột thanh trượt volume.
+    * Thực hiện điều chỉnh cường độ âm thanh theo giá trị của thanh trượt volume.
+    * Thanh trượt volume trả về giá trị trong (0,100).*/
     public void setVolume(MouseEvent mouseEvent) {
         if (songs.size() > 0) {
             volumeValue = (float) (volume.getValue() / 100);
@@ -401,6 +460,8 @@ public class MusicPlayerController implements javafx.fxml.Initializable {
         }
     }
 
+    /*Bắt sự kiện chuột.
+    * thực hiện hàm addSong.*/
     public void showPopup(MouseEvent mouseEvent) {
         addSong();
     }
